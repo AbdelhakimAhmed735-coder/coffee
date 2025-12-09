@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coffee Haven - Cart</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">Coffee Haven</div>
+            <ul>
+                <li><a href="home.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="menu.html">Menu</a></li>
+                <li><a href="cart.html">Cart</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="login.html">Login</a></li>
+
+            </ul>
+        </nav>
+    </header>
+
+    <section id="cart">
+        <div class="container">
+            <h2>Items You Selected</h2>
+            <div id="cart-items"></div>
+            <div id="cart-total">Total: 0 USD</div>
+            <button onclick="window.location.href='checkout.html'" class="btn">Checkout</button>
+            <button id="clear-cart" class="btn">Clear Cart</button>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2023 Abdo. All rights reserved.</p>
+    </footer>
+
+    <script src="auth.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

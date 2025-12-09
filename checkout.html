@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coffee Haven - Checkout</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">Coffee Haven</div>
+            <ul>
+                <li><a href="home.html">Home</a></li>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="menu.html">Menu</a></li>
+                <li><a href="cart.html">Cart</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="login.html">Login</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="checkout">
+        <div class="container">
+            <h2>Complete Your Order</h2>
+            <div class="checkout-summary">
+                <h3>Your Order</h3>
+                <div id="checkout-items"></div>
+                <div id="checkout-total">Total: $0</div>
+            </div>
+
+            <div class="checkout-form">
+                <h3>Payment Method</h3>
+                <form id="payment-form">
+                    <div class="payment-option">
+                        <input type="radio" id="credit-card" name="payment" value="credit-card" checked>
+                        <label for="credit-card">💳 Credit Card</label>
+                        <div class="card-details" id="card-details">
+                            <input type="text" placeholder="Card Number" required>
+                            <input type="text" placeholder="Expiry Date (MM/YY)" required>
+                            <input type="text" placeholder="CVV" required>
+                        </div>
+                    </div>
+
+                    <div class="payment-option">
+                        <input type="radio" id="cash" name="payment" value="cash">
+                        <label for="cash">💵 Cash on Delivery</label>
+                        <div class="cash-note" id="cash-note">
+                            <p>💰 Pay with cash when your order arrives at your door. No extra fees!</p>
+                        </div>
+                    </div>
+
+                    <h3>📍 Shipping Address</h3>
+                    <input type="text" placeholder="Full Name" required>
+                    <input type="text" placeholder="Street Address" required>
+                    <input type="text" placeholder="City" required>
+                    <input type="text" placeholder="Phone Number" required>
+
+                    <button type="submit" class="btn place-order-btn">Place Order</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2023 Coffee Haven. All rights reserved.</p>
+    </footer>
+
+    <script src="auth.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // City autocomplete data
+        const cities = [
+            "Cairo", "Alexandria", "Giza", "Shubra El-Kheima", "Port Said", "Suez", "Luxor",
+            "Mansoura", "Tanta", "Asyut", "Ismailia", "Fayoum", "Zagazig", "Aswan", "Damietta",
+            "Damanhur", "Minya", "Beni Suef", "Qena", "Sohag", "Hurghada", "6th of October City",
+            "Shibin El Kom", "Banha", "Kafr el-Sheikh", "Arish", "Mallawi", "Bilbais", "Marsa Matruh",
+            "Idfu", "Mit Ghamr", "Al-Hamidiyya", "Desouk", "Qalyub", "Abu Kabir", "Kafr Dawar",
+            "Girga", "Akhmim", "Matareya", "Qift", "Safaga", "Samalut", "Tama", "Abu Tig", "El Qanater El Khayreya"
+        ];
+
+        // Load cart items on checkout page
+        document.addEventListener('DOMContentLoaded', function() {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const checkoutItems = document.getElementById('checkout-items');
+            const checkoutTotal = document.getElementById('checkout-total');
+            let total = 0;
+
+            checkoutItems.innerHTML = '';
+            cart.forEach(item => {
+                const itemDiv = document.createElement('div');
+                itemDiv.textContent = `${item.name} - $${item.price.toFixed(2)}`;
+                checkoutItems.appendChild(itemDiv);
+                total += item.price;
+            });
+
+            checkoutTotal.textContent = `Total: $${total.toFixed(2)}`;
+
+            // Initialize city autocomplete
+            initCityAutocomplete();
+        });
+
+        // City autocomplete functionality
+        function initCityAutocomplete() {
+            const cityInput = document.getElementById('city-input');
+            const suggestionsDiv = document.getElementById('city-suggestions');
+
+            cityInput.addEventListener('input', function() {
+                const query = this.value.toLowerCase();
+                suggestionsDiv.innerHTML = '';
+
+                if (query.length < 2) {
+                    suggestionsDiv.style.display = 'none';
+                    return;
+                }
+
+                const filteredCities = cities.filter(city =>
+                    city.toLowerCase().includes(query)
+                ).slice(0, 5); // Limit to 5 suggestions
+
+                if (filteredCities.length > 0) {
+                    suggestionsDiv.style.display = 'block';
+                    filteredCities.forEach(city => {
+                        const suggestion = document.createElement('div');
+                        suggestion.className = 'city-suggestion';
+                        suggestion.textContent = city;
+                        suggestion.addEventListener('click', function() {
+                            cityInput.value = city;
+                            suggestionsDiv.style.display = 'none';
+                        });
+                        suggestionsDiv.appendChild(suggestion);
+                    });
+                } else {
+                    suggestionsDiv.style.display = 'none';
+                }
+            });
+
+            // Hide suggestions when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!cityInput.contains(e.target) && !suggestionsDiv.contains(e.target)) {
+                    suggestionsDiv.style.display = 'none';
+                }
+            });
+        }
+
+        // Handle payment form submission
+        document.getElementById('payment-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Order placed successfully! Thank you for shopping with Coffee Haven.');
+            localStorage.removeItem('cart');
+            window.location.href = 'home.html';
+        });
+
+        // Show/hide card details and cash note based on payment method
+        document.querySelectorAll('input[name="payment"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const cardDetails = document.getElementById('card-details');
+                const cashNote = document.getElementById('cash-note');
+                if (this.value === 'credit-card') {
+                    cardDetails.style.display = 'block';
+                    cashNote.style.display = 'none';
+                } else if (this.value === 'cash') {
+                    cardDetails.style.display = 'none';
+                    cashNote.style.display = 'block';
+                } else {
+                    cardDetails.style.display = 'none';
+                    cashNote.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
