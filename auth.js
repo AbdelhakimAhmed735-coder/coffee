@@ -1,4 +1,3 @@
-// ===== التحقق قبل أي عملية =====
 function requireLogin() {
     if (localStorage.getItem("stayLoggedOut") === "true") {
         alert("You are in guest mode. Please log in to perform this action!");
@@ -11,12 +10,11 @@ function requireLogin() {
     return true;
 }
 
-// ===== تسجيل الدخول =====
 function login() {
     const username = document.querySelector('input[type="text"]').value;
     const password = document.querySelector('input[type="password"]').value;
 
-    fetch('/login', {
+    fetch('http://localhost:3000/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password })
@@ -34,23 +32,19 @@ function login() {
     });
 }
 
-// ===== تسجيل الخروج =====
 function logout() {
     localStorage.removeItem("loggedIn");
     localStorage.removeItem("userId");
     window.location.href = "home.html";
 }
 
-// ===== البقاء مسجل الخروج =====
 function stayLoggedOut() {
     localStorage.setItem("stayLoggedOut", "true");
     window.location.href = "home.html";
 }
 function clearCart() {
     if(confirm("Are you sure you want to clear your cart?")) {
-        localStorage.removeItem("cart"); // يمسح السلة بالكامل
+        localStorage.removeItem("cart");
         alert("Cart has been cleared!");
-        // لو عايز تحدث الصفحة تلقائيًا بعد المسح:
-        // location.reload();
     }
 }
